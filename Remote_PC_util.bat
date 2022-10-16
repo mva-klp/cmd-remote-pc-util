@@ -2,27 +2,27 @@
 @Echo Off
 
 :START
-Set /P $InputPC="Введите имя или IP ПК : "
+Set /P $InputPC="Inter PC name or IP: "
 
 ping %$InputPC% -n 1 | find "TTL=" > nul
 if errorlevel 1 (
-	echo %$InputPC% выключен или не существует
+	echo %$InputPC% is switch off or not exists
 	goto START
 )
 
 :MENU
 echo +++++++++++++++++%$InputPC%++++++++++++++++++++
-echo 1. Выключить ПК
-echo 2. Перезагрузить ПК
-echo 3. Изменить описание ПК
-echo 4. Вывести список всех профилей
-echo 5. Показать сведения о системе
-echo 6. Список активных пользователей
-echo 7. Оснастка Локальные группы и пользователи
-echo 0. Выход
+echo 1. Shutdown PC
+echo 2. Reset PC
+echo 3. Change PC description
+echo 4. User's profiles
+echo 5. System info
+echo 6. List of active users
+echo 7. Local group and users console
+echo 0. Exit
 echo +++++++++++++++++++++++++++++++++++++++++++++++
 
-set /p var="Ваш выбор: "
+set /p var="Your choice: "
 if "%var%"=="1" goto P1
 if "%var%"=="2" goto P2
 if "%var%"=="3" goto P3
@@ -35,18 +35,18 @@ goto MENU
 
 :P1
 shutdown /f /s /m \\%$InputPC%
-echo %$InputPC% будет выключен
+echo %$InputPC% will be switch off
 start cmd.exe /C ping -t %$InputPC%
 goto MENU
 
 :P2
 shutdown /f /r /m \\%$InputPC%
-echo %$InputPC% отправлен на перезагрузку
+echo %$InputPC% will be reseted
 start cmd.exe /C ping -t %$InputPC%
 goto MENU
 
 :P3
-Set /P $InputDescr="Введите описание (Description) ПК: "
+Set /P $InputDescr="Inter PC Description: "
 echo %$InputDescr%
 echo reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters /v srvcomment /t REG_SZ /d "%$InputDescr%" /f > C:\reg.bat
 xcopy "C:\reg.bat" "\\%$InputPC%\C$"
@@ -54,7 +54,7 @@ wmic /node:"%$InputPC%" process call create "C:\reg.bat"
 pause
 del /f /q "C:\reg.bat"
 del /f /q "\\%$InputPC%\C$\reg.bat"
-echo reg файл был удален
+echo reg file was deleted
 pause
 goto MENU
 
